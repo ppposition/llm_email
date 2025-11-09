@@ -1,16 +1,12 @@
-import smtplib
 import logging
 from typing import List, Dict, Any, Optional
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 import json
 
 from config import Config
 from src.models.email_model import Email
+from src.services.qq_email_client import QQEmailClient
 
-# 设置日志
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class NotificationService:
@@ -18,11 +14,18 @@ class NotificationService:
     
     def __init__(self):
         """初始化通知服务"""
-        self.smtp_server = Config.SMTP_SERVER
-        self.smtp_port = Config.SMTP_PORT
-        self.smtp_username = Config.SMTP_USERNAME
-        self.smtp_password = Config.SMTP_PASSWORD
+        # 使用通知专用的SMTP配置
+        self.smtp_server = Config.NOTIFICATION_SMTP_SERVER
+        self.smtp_port = Config.NOTIFICATION_SMTP_PORT
+        self.smtp_username = Config.NOTIFICATION_SMTP_USERNAME
+        self.smtp_password = Config.NOTIFICATION_SMTP_PASSWORD
         self.notification_email = Config.NOTIFICATION_EMAIL
+        
+        # 创建QQ邮箱客户端用于发送通知
+        self.qq_email_client = QQEmailClient(
+            qq_email=self.smtp_username,
+            auth_code=self.smtp_password
+        )
         
         # 验证通知配置
         self._validate_notification_config()
@@ -31,9 +34,9 @@ class NotificationService:
         """验证通知配置"""
         required_fields = [
             'NOTIFICATION_EMAIL',
-            'SMTP_SERVER',
-            'SMTP_USERNAME',
-            'SMTP_PASSWORD'
+            'NOTIFICATION_SMTP_SERVER',
+            'NOTIFICATION_SMTP_USERNAME',
+            'NOTIFICATION_SMTP_PASSWORD'
         ]
         
         missing_fields = []
@@ -195,25 +198,14 @@ class NotificationService:
     def _send_email(self, to_email: str, subject: str, body: str, is_html: bool = False) -> bool:
         """发送邮件"""
         try:
-            # 创建邮件消息
-            msg = MIMEMultipart()
-            msg['From'] = self.smtp_username
-            msg['To'] = to_email
-            msg['Subject'] = subject
-            
-            # 添加邮件正文
-            if is_html:
-                msg.attach(MIMEText(body, 'html'))
-            else:
-                msg.attach(MIMEText(body, 'plain'))
-            
-            # 连接SMTP服务器并发送邮件
-            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
-                server.starttls()  # 启用TLS加密
-                server.login(self.smtp_username, self.smtp_password)
-                server.send_message(msg)
-            
-            return True
+            # 使用QQ邮箱客户端发送邮件
+            content_type = "html" if is_html else "plain"
+            return self.qq_email_client.send_email(
+                to_emails=to_email,
+                subject=subject,
+                content=body,
+                content_type=content_type
+            )
             
         except Exception as e:
             logger.error(f"发送邮件时出错: {str(e)}")

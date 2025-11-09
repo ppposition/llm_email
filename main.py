@@ -19,6 +19,7 @@ from src.services.email_receiver import EmailReceiver
 from src.services.email_processor import EmailProcessor
 from src.services.rag_service import RAGService
 from src.services.notification_service import NotificationService
+from src.services.qq_email_client import QQEmailClient
 from src.api.app import create_app
 
 # 设置日志
@@ -52,6 +53,7 @@ class EmailManagementSystem:
         self.email_processor = EmailProcessor()
         self.rag_service = RAGService()
         self.notification_service = NotificationService()
+        self.qq_email_client = QQEmailClient()  # 添加QQ邮箱客户端
         
         # 控制变量
         self.running = False

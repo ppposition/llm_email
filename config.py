@@ -10,8 +10,12 @@ class Config:
     # 邮箱配置
     EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
     EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    IMAP_SERVER = os.getenv('IMAP_SERVER')
+    IMAP_SERVER = os.getenv('IMAP_SERVER', 'imap.qq.com')  # 默认为QQ邮箱IMAP服务器
     IMAP_PORT = int(os.getenv('IMAP_PORT', 993))
+    
+    # SMTP配置（用于发送邮件）
+    SMTP_SERVER = os.getenv('SMTP_SERVER', 'smtp.qq.com')  # 默认为QQ邮箱SMTP服务器
+    SMTP_PORT = int(os.getenv('SMTP_PORT', 465))  # 默认为QQ邮箱SMTP端口
     
     # Qwen API配置 (用于embedding)
     QWEN_API_KEY = os.getenv('QWEN_API_KEY')
@@ -42,10 +46,10 @@ class Config:
     
     # 重要通知提醒配置
     NOTIFICATION_EMAIL = os.getenv('NOTIFICATION_EMAIL')
-    SMTP_SERVER = os.getenv('SMTP_SERVER')
-    SMTP_PORT = int(os.getenv('SMTP_PORT', 587))
-    SMTP_USERNAME = os.getenv('SMTP_USERNAME')
-    SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
+    NOTIFICATION_SMTP_SERVER = os.getenv('NOTIFICATION_SMTP_SERVER', SMTP_SERVER)  # 默认使用主SMTP服务器
+    NOTIFICATION_SMTP_PORT = int(os.getenv('NOTIFICATION_SMTP_PORT', 587))  # 默认为587，支持TLS
+    NOTIFICATION_SMTP_USERNAME = os.getenv('NOTIFICATION_SMTP_USERNAME', EMAIL_ADDRESS)  # 默认使用主邮箱
+    NOTIFICATION_SMTP_PASSWORD = os.getenv('NOTIFICATION_SMTP_PASSWORD', EMAIL_PASSWORD)  # 默认使用主邮箱密码
     
     @classmethod
     def validate_config(cls):

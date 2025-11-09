@@ -1,0 +1,66 @@
+2025-11-09 22:19:58,750 - __main__ - INFO - 初始化邮箱管理系统
+2025-11-09 22:19:58,751 - __main__ - INFO - 配置验证通过
+2025-11-09 22:19:58,751 - src.services.qq_email_client - INFO - 初始化QQ邮箱客户端: 1016194798@qq.com
+2025-11-09 22:19:58,884 - src.services.rag_service - INFO - 使用Qwen embedding模型: Qwen/Qwen3-Embedding-8B
+2025-11-09 22:19:58,918 - src.services.rag_service - INFO - 使用Gemini LLM模型: gemini-2.5-pro
+2025-11-09 22:19:58,918 - src.services.rag_service - INFO - 加载现有向量数据库
+2025-11-09 22:19:58,919 - faiss.loader - INFO - Loading faiss with AVX2 support.
+2025-11-09 22:19:58,933 - faiss.loader - INFO - Successfully loaded faiss with AVX2 support.
+2025-11-09 22:19:58,937 - src.services.rag_service - INFO - QA链初始化完成
+2025-11-09 22:19:58,937 - src.services.qq_email_client - INFO - 初始化QQ邮箱客户端: your_smtp_username
+2025-11-09 22:19:58,937 - src.services.qq_email_client - INFO - 初始化QQ邮箱客户端: 1016194798@qq.com
+2025-11-09 22:19:58,937 - __main__ - INFO - 创建目录: ./vector_db
+2025-11-09 22:19:58,937 - __main__ - INFO - 创建目录: ./logs
+2025-11-09 22:19:58,937 - __main__ - INFO - 创建目录: ./data
+2025-11-09 22:19:58,937 - __main__ - INFO - 邮箱管理系统初始化完成
+2025-11-09 22:19:58,937 - __main__ - INFO - 开始测试系统功能
+2025-11-09 22:19:58,937 - __main__ - INFO - 测试邮件接收功能
+2025-11-09 22:19:59,770 - src.services.qq_email_client - INFO - 成功连接到IMAP服务器: imap.qq.com
+2025-11-09 22:19:59,770 - __main__ - INFO - 邮件接收功能测试成功
+2025-11-09 22:19:59,770 - src.services.qq_email_client - ERROR - 断开IMAP连接时出错: command CLOSE illegal in state AUTH, only allowed in states SELECTED
+2025-11-09 22:19:59,771 - __main__ - INFO - 测试通知功能
+2025-11-09 22:19:59,771 - src.services.notification_service - INFO - 测试通知功能
+2025-11-09 22:19:59,772 - src.services.qq_email_client - INFO - 正在连接SMTP服务器...
+2025-11-09 22:19:59,772 - src.services.qq_email_client - INFO - 使用SSL连接到 smtp.qq.com:465
+2025-11-09 22:20:00,282 - src.services.qq_email_client - ERROR - 邮箱登录失败: Connection unexpectedly closed
+2025-11-09 22:20:00,283 - src.services.qq_email_client - ERROR - 发送邮件失败: 邮箱登录失败: Connection unexpectedly closed
+2025-11-09 22:20:00,286 - src.services.qq_email_client - ERROR - 详细错误信息: Traceback (most recent call last):
+  File "/home/position/python/email/src/services/qq_email_client.py", line 119, in send_email
+    server.login(self.qq_email, self.auth_code)
+  File "/home/position/miniconda3/envs/llm/lib/python3.12/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/home/position/miniconda3/envs/llm/lib/python3.12/smtplib.py", line 642, in auth
+    (code, resp) = self.docmd("AUTH", mechanism + " " + response)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/position/miniconda3/envs/llm/lib/python3.12/smtplib.py", line 432, in docmd
+    return self.getreply()
+           ^^^^^^^^^^^^^^^
+  File "/home/position/miniconda3/envs/llm/lib/python3.12/smtplib.py", line 405, in getreply
+    raise SMTPServerDisconnected("Connection unexpectedly closed")
+smtplib.SMTPServerDisconnected: Connection unexpectedly closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/position/python/email/src/services/qq_email_client.py", line 123, in send_email
+    raise Exception(f"邮箱登录失败: {str(login_error)}")
+Exception: 邮箱登录失败: Connection unexpectedly closed
+
+2025-11-09 22:20:00,286 - src.services.notification_service - ERROR - 通知功能测试失败
+2025-11-09 22:20:00,286 - __main__ - WARNING - 通知功能测试失败
+2025-11-09 22:20:00,286 - __main__ - INFO - 测试RAG功能
+2025-11-09 22:20:00,286 - __main__ - INFO - RAG统计信息: {'total_emails': 1, 'vector_db_path': './vector_db', 'last_updated': '2025-11-09T22:20:00.286672'}
+2025-11-09 22:20:00,286 - __main__ - INFO - 系统功能测试完成
+2025-11-09 22:20:00,286 - __main__ - INFO - 启动邮箱管理系统
+2025-11-09 22:20:00,287 - __main__ - INFO - 启动邮件检查循环
+2025-11-09 22:20:00,287 - __main__ - INFO - 启动Web API
+2025-11-09 22:20:00,287 - __main__ - INFO - 检查新邮件
+2025-11-09 22:20:00,301 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.102:5000
+2025-11-09 22:20:00,301 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-09 22:20:00,788 - src.services.qq_email_client - INFO - 成功连接到IMAP服务器: imap.qq.com
+2025-11-09 22:20:01,084 - src.services.qq_email_client - INFO - 找到 10 封邮件
+2025-11-09 22:20:01,287 - src.services.qq_email_client - ERROR - 获取邮件 b'402' 时出错: expected string or bytes-like object, got 'Header'

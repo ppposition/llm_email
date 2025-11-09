@@ -44,18 +44,26 @@ if ! python3 -c "import langchain, langchain_openai, flask" &> /dev/null; then
     fi
 fi
 
-# 运行配置测试
+# 检查配置文件
 echo ""
-echo "运行配置测试..."
-python3 test_config.py
+echo "检查配置文件..."
+python3 -c "
+try:
+    from config import Config
+    Config.validate_config()
+    print('配置验证通过')
+except Exception as e:
+    print(f'配置验证失败: {e}')
+    exit(1)
+"
 if [ $? -ne 0 ]; then
     echo ""
-    echo "配置测试失败，请检查配置后重试"
+    echo "配置检查失败，请检查配置后重试"
     exit 1
 fi
 
 echo ""
-echo "配置测试通过，正在启动系统..."
+echo "配置检查通过，正在启动系统..."
 echo "按Ctrl+C停止系统"
 echo ""
 

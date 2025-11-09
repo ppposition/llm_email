@@ -3,6 +3,7 @@ from flask_cors import CORS
 import logging
 from datetime import datetime
 from typing import Dict, Any, List
+from .mock_system import MockEmailSystem
 
 logger = logging.getLogger(__name__)
 
@@ -191,6 +192,64 @@ def create_app(email_system=None):
                 'error': str(e)
             }), 500
     
+    # 邮件发送路由
+    @app.route('/api/emails/send', methods=['POST'])
+    def send_email():
+        """发送邮件"""
+        try:
+            data = request.get_json()
+            to_emails = data.get('to_emails', [])
+            subject = data.get('subject', '')
+            content = data.get('content', '')
+            content_type = data.get('content_type', 'plain')
+            attachments = data.get('attachments', [])
+            
+            if not to_emails or not subject or not content:
+                return jsonify({
+                    'success': False,
+                    'error': '收件人、主题和内容不能为空'
+                }), 400
+            
+            # 发送邮件
+            success = email_system.qq_email_client.send_email(
+                to_emails=to_emails,
+                subject=subject,
+                content=content,
+                content_type=content_type,
+                attachments=attachments
+            )
+            
+            return jsonify({
+                'success': True,
+                'data': {
+                    'send_success': success
+                }
+            })
+        except Exception as e:
+            logger.error(f"发送邮件时出错: {str(e)}")
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+    
+    # 邮件文件夹路由
+    @app.route('/api/emails/folders', methods=['GET'])
+    def get_email_folders():
+        """获取邮件文件夹列表"""
+        try:
+            folders = email_system.qq_email_client.get_folders()
+            
+            return jsonify({
+                'success': True,
+                'data': folders
+            })
+        except Exception as e:
+            logger.error(f"获取邮件文件夹时出错: {str(e)}")
+            return jsonify({
+                'success': False,
+                'error': str(e)
+            }), 500
+    
     # 错误处理
     @app.errorhandler(404)
     def not_found(error):
@@ -207,149 +266,3 @@ def create_app(email_system=None):
         }), 500
     
     return app
-
-class MockEmailSystem:
-    """模拟邮件系统类，用于API测试"""
-    
-    def get_emails(self, limit=10, offset=0, importance=None, category=None):
-        """获取邮件列表（模拟数据）"""
-        # 这里返回模拟数据
-        mock_emails = [
-            {
-                'id': '1',
-                'subject': '测试邮件1',
-                'sender': 'test1@example.com',
-                'recipients': ['user@example.com'],
-                'date': datetime.now().isoformat(),
-                'body': '这是一封测试邮件的内容。',
-                'importance': 'high',
-                'category': 'work',
-                'summary': '这是一封测试邮件的总结。'
-            },
-            {
-                'id': '2',
-                'subject': '测试邮件2',
-                'sender': 'test2@example.com',
-                'recipients': ['user@example.com'],
-                'date': datetime.now().isoformat(),
-                'body': '这是另一封测试邮件的内容。',
-                'importance': 'medium',
-                'category': 'personal',
-                'summary': '这是另一封测试邮件的总结。'
-            }
-        ]
-        
-        # 应用过滤条件
-        if importance:
-            mock_emails = [e for e in mock_emails if e.get('importance') == importance]
-        
-        if category:
-            mock_emails = [e for e in mock_emails if e.get('category') == category]
-        
-        # 应用分页
-        start = offset
-        end = start + limit
-        return mock_emails[start:end]
-    
-    def get_email_by_id(self, email_id):
-        """根据ID获取邮件（模拟数据）"""
-        mock_emails = {
-            '1': {
-                'id': '1',
-                'subject': '测试邮件1',
-                'sender': 'test1@example.com',
-                'recipients': ['user@example.com'],
-                'date': datetime.now().isoformat(),
-                'body': '这是一封测试邮件的内容。',
-                'html_body': '<p>这是一封测试邮件的内容。</p>',
-                'importance': 'high',
-                'category': 'work',
-                'summary': '这是一封测试邮件的总结。',
-                'key_info': {
-                    'key_points': ['这是一个关键点'],
-                    'action_items': ['这是一个行动项'],
-                    'important_dates': ['2023-01-01'],
-                    'contacts': ['test1@example.com']
-                }
-            },
-            '2': {
-                'id': '2',
-                'subject': '测试邮件2',
-                'sender': 'test2@example.com',
-                'recipients': ['user@example.com'],
-                'date': datetime.now().isoformat(),
-                'body': '这是另一封测试邮件的内容。',
-                'html_body': '<p>这是另一封测试邮件的内容。</p>',
-                'importance': 'medium',
-                'category': 'personal',
-                'summary': '这是另一封测试邮件的总结。',
-                'key_info': {
-                    'key_points': ['这是另一个关键点'],
-                    'action_items': [],
-                    'important_dates': [],
-                    'contacts': ['test2@example.com']
-                }
-            }
-        }
-        
-        return mock_emails.get(email_id)
-    
-    def search_emails(self, query, k=5):
-        """搜索邮件（模拟数据）"""
-        # 这里返回模拟数据
-        return [
-            {
-                'content': f'搜索结果: {query}',
-                'metadata': {
-                    'email_id': '1',
-                    'subject': '测试邮件1',
-                    'sender': 'test1@example.com'
-                },
-                'score': 0.9
-            }
-        ]
-    
-    def ask_question(self, question):
-        """回答问题（模拟数据）"""
-        # 这里返回模拟数据
-        return {
-            'answer': f'这是对问题 "{question}" 的模拟回答。',
-            'source_documents': [
-                {
-                    'content': '这是源文档的内容。',
-                    'metadata': {
-                        'email_id': '1',
-                        'subject': '测试邮件1'
-                    }
-                }
-            ]
-        }
-    
-    def get_email_statistics(self):
-        """获取邮件统计信息（模拟数据）"""
-        # 这里返回模拟数据
-        return {
-            'total_emails': 100,
-            'by_importance': {
-                'high': 20,
-                'medium': 50,
-                'low': 30
-            },
-            'by_category': {
-                'work': 40,
-                'personal': 30,
-                'advertisement': 20,
-                'other': 10
-            },
-            'last_updated': datetime.now().isoformat()
-        }
-    
-    def test_notification(self):
-        """测试通知功能（模拟数据）"""
-        # 这里返回模拟数据
-        return True
-    
-    def rebuild_vector_store(self):
-        """重建向量数据库（模拟数据）"""
-        # 这里返回模拟数据
-        return True

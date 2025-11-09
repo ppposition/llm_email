@@ -12,8 +12,6 @@ from langchain.schema import HumanMessage
 from config import Config
 from src.models.email_model import Email
 
-# 设置日志
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class EmailProcessor:
