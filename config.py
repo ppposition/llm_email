@@ -10,12 +10,12 @@ class Config:
     # 邮箱配置
     EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
     EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    IMAP_SERVER = os.getenv('IMAP_SERVER', 'imap.qq.com')  # 默认为QQ邮箱IMAP服务器
+    IMAP_SERVER = os.getenv('IMAP_SERVER', 'mail.sjtu.edu.cn')  # 默认为学校邮箱IMAP服务器
     IMAP_PORT = int(os.getenv('IMAP_PORT', 993))
     
     # SMTP配置（用于发送邮件）
-    SMTP_SERVER = os.getenv('SMTP_SERVER', 'smtp.qq.com')  # 默认为QQ邮箱SMTP服务器
-    SMTP_PORT = int(os.getenv('SMTP_PORT', 465))  # 默认为QQ邮箱SMTP端口
+    SMTP_SERVER = os.getenv('SMTP_SERVER', 'mail.sjtu.edu.cn')  # 默认为学校邮箱SMTP服务器
+    SMTP_PORT = int(os.getenv('SMTP_PORT', 465))  # 默认为学校邮箱SMTP端口
     
     # Qwen API配置 (用于embedding)
     QWEN_API_KEY = os.getenv('QWEN_API_KEY')

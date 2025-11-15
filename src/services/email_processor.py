@@ -5,9 +5,9 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.schema import HumanMessage
+from langchain_core.prompts import PromptTemplate
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.messages import HumanMessage
 
 from config import Config
 from src.models.email_model import Email

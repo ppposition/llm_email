@@ -211,7 +211,7 @@ def create_app(email_system=None):
                 }), 400
             
             # 发送邮件
-            success = email_system.qq_email_client.send_email(
+            success = email_system.school_email_client.send_email(
                 to_emails=to_emails,
                 subject=subject,
                 content=content,
@@ -237,7 +237,7 @@ def create_app(email_system=None):
     def get_email_folders():
         """获取邮件文件夹列表"""
         try:
-            folders = email_system.qq_email_client.get_folders()
+            folders = email_system.school_email_client.get_folders()
             
             return jsonify({
                 'success': True,

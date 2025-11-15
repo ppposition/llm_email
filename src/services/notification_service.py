@@ -5,7 +5,7 @@ import json
 
 from config import Config
 from src.models.email_model import Email
-from src.services.qq_email_client import QQEmailClient
+from src.services.school_email_client import SchoolEmailClient
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +21,10 @@ class NotificationService:
         self.smtp_password = Config.NOTIFICATION_SMTP_PASSWORD
         self.notification_email = Config.NOTIFICATION_EMAIL
         
-        # 创建QQ邮箱客户端用于发送通知
-        self.qq_email_client = QQEmailClient(
-            qq_email=self.smtp_username,
-            auth_code=self.smtp_password
+        # 创建学校邮箱客户端用于发送通知
+        self.school_email_client = SchoolEmailClient(
+            school_email=self.smtp_username,
+            password=self.smtp_password
         )
         
         # 验证通知配置
@@ -129,78 +129,65 @@ class NotificationService:
     
     def _create_notification_body(self, email: Email) -> str:
         """创建单封邮件的通知内容"""
-        body = f"""
-您收到了一封重要邮件，详情如下：
-
-主题: {email.subject}
-发件人: {email.sender}
-收件人: {', '.join(email.recipients)}
-日期: {email.date.strftime('%Y-%m-%d %H:%M:%S')}
-重要性: {email.importance}
-类别: {email.category}
-
-"""
+        # 简化邮件内容，减少被识别为垃圾邮件的可能性
+        body_parts = [
+            f"您有一封重要邮件需要关注。",
+            f"",
+            f"邮件主题: {email.subject}",
+            f"发件人: {email.sender}",
+            f"时间: {email.date.strftime('%Y-%m-%d %H:%M')}",
+            f"重要性: {email.importance}",
+            f""
+        ]
         
         # 添加邮件总结（如果有）
-        if email.summary:
-            body += f"邮件总结:\n{email.summary}\n\n"
+        if email.summary and len(email.summary.strip()) > 0:
+            # 限制总结长度
+            summary = email.summary[:200] + "..." if len(email.summary) > 200 else email.summary
+            body_parts.append(f"内容摘要: {summary}")
+            body_parts.append("")
         
-        # 添加关键信息（如果有）
-        if email.key_info:
-            body += "关键信息:\n"
-            if email.key_info.get('key_points'):
-                body += f"关键要点: {'; '.join(email.key_info['key_points'])}\n"
-            if email.key_info.get('action_items'):
-                body += f"行动项: {'; '.join(email.key_info['action_items'])}\n"
-            if email.key_info.get('important_dates'):
-                body += f"重要日期: {'; '.join(email.key_info['important_dates'])}\n"
-            if email.key_info.get('contacts'):
-                body += f"联系人: {'; '.join(email.key_info['contacts'])}\n"
-            body += "\n"
+        # 添加邮件正文预览（限制长度）
+        if email.body and len(email.body.strip()) > 0:
+            preview = email.body[:300] + "..." if len(email.body) > 300 else email.body
+            body_parts.append(f"内容预览: {preview}")
+            body_parts.append("")
         
-        # 添加邮件正文预览
-        body += "邮件正文预览:\n"
-        preview_length = 500  # 预览长度
-        if len(email.body) > preview_length:
-            body += email.body[:preview_length] + "..."
-        else:
-            body += email.body
+        body_parts.append("此邮件由邮箱管理系统自动发送，请勿回复。")
         
-        body += "\n\n---\n此邮件由邮箱管理系统自动发送"
-        
-        return body
+        return "\n".join(body_parts)
     
     def _create_batch_notification_body(self, emails: List[Email]) -> str:
         """创建批量邮件的通知内容"""
-        body = f"""
-您收到了 {len(emails)} 封重要邮件，详情如下：
-
-"""
+        body_parts = [
+            f"您有 {len(emails)} 封重要邮件需要关注。",
+            f""
+        ]
         
         # 添加每封邮件的摘要信息
         for i, email in enumerate(emails, 1):
-            body += f"{i}. 主题: {email.subject}\n"
-            body += f"   发件人: {email.sender}\n"
-            body += f"   日期: {email.date.strftime('%Y-%m-%d %H:%M:%S')}\n"
-            body += f"   重要性: {email.importance}\n"
-            body += f"   类别: {email.category}\n"
+            body_parts.append(f"{i}. {email.subject}")
+            body_parts.append(f"   发件人: {email.sender}")
+            body_parts.append(f"   时间: {email.date.strftime('%Y-%m-%d %H:%M')}")
+            body_parts.append(f"   重要性: {email.importance}")
             
-            # 添加邮件总结（如果有）
-            if email.summary:
-                body += f"   总结: {email.summary[:100]}...\n"
+            # 添加简短总结（如果有）
+            if email.summary and len(email.summary.strip()) > 0:
+                summary = email.summary[:100] + "..." if len(email.summary) > 100 else email.summary
+                body_parts.append(f"   摘要: {summary}")
             
-            body += "\n"
+            body_parts.append("")
         
-        body += "---\n此邮件由邮箱管理系统自动发送"
+        body_parts.append("此邮件由邮箱管理系统自动发送，请勿回复。")
         
-        return body
+        return "\n".join(body_parts)
     
     def _send_email(self, to_email: str, subject: str, body: str, is_html: bool = False) -> bool:
         """发送邮件"""
         try:
             # 使用QQ邮箱客户端发送邮件
             content_type = "html" if is_html else "plain"
-            return self.qq_email_client.send_email(
+            return self.school_email_client.send_email(
                 to_emails=to_email,
                 subject=subject,
                 content=body,
@@ -220,22 +207,23 @@ class NotificationService:
         try:
             logger.info(f"发送系统通知: {subject}")
             
-            # 创建邮件内容
-            body = f"""
-系统通知:
-
-{message}
-
-时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-
----
-此邮件由邮箱管理系统自动发送
-"""
+            # 创建简化的邮件内容
+            body_parts = [
+                f"系统通知: {subject}",
+                f"",
+                f"{message}",
+                f"",
+                f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                f"",
+                f"此邮件由邮箱管理系统自动发送，请勿回复。"
+            ]
+            
+            body = "\n".join(body_parts)
             
             # 发送邮件
             success = self._send_email(
                 to_email=self.notification_email,
-                subject=f"系统通知: {subject}",
+                subject=f"[系统] {subject}",
                 body=body
             )
             
@@ -259,29 +247,37 @@ class NotificationService:
         try:
             logger.info("发送错误通知")
             
-            # 创建邮件内容
-            body = f"""
-系统错误通知:
-
-错误信息: {error_message}
-
-时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-"""
+            # 创建简化的邮件内容
+            body_parts = [
+                f"系统错误通知",
+                f"",
+                f"错误信息: {error_message}",
+                f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                f""
+            ]
             
-            # 添加上下文信息（如果有）
+            # 添加简化的上下文信息（如果有）
             if context:
-                body += "\n上下文信息:\n"
+                body_parts.append("相关信息:")
                 try:
-                    body += json.dumps(context, indent=2, ensure_ascii=False)
+                    # 只显示关键信息，避免复杂的JSON格式
+                    if isinstance(context, dict):
+                        for key, value in list(context.items())[:5]:  # 限制显示前5个键值对
+                            body_parts.append(f"- {key}: {value}")
+                    else:
+                        body_parts.append(f"- {str(context)[:200]}...")  # 限制长度
                 except:
-                    body += str(context)
+                    body_parts.append(f"- {str(context)[:200]}...")  # 限制长度
             
-            body += "\n---\n此邮件由邮箱管理系统自动发送"
+            body_parts.append("")
+            body_parts.append("此邮件由邮箱管理系统自动发送，请勿回复。")
+            
+            body = "\n".join(body_parts)
             
             # 发送邮件
             success = self._send_email(
                 to_email=self.notification_email,
-                subject="系统错误通知",
+                subject="[错误] 系统通知",
                 body=body
             )
             
@@ -305,22 +301,24 @@ class NotificationService:
         try:
             logger.info("测试通知功能")
             
-            # 创建测试邮件内容
-            body = """
-这是一封测试邮件，用于验证邮箱管理系统的通知功能是否正常工作。
-
-如果您收到此邮件，说明通知功能配置正确。
-
-时间: {}
-
----
-此邮件由邮箱管理系统自动发送
-""".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            # 创建简化的测试邮件内容
+            body_parts = [
+                f"邮箱管理系统通知功能测试",
+                f"",
+                f"这是一封测试邮件，用于验证通知功能是否正常工作。",
+                f"如果您收到此邮件，说明通知功能配置正确。",
+                f"",
+                f"测试时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                f"",
+                f"此邮件由邮箱管理系统自动发送，请勿回复。"
+            ]
+            
+            body = "\n".join(body_parts)
             
             # 发送测试邮件
             success = self._send_email(
                 to_email=self.notification_email,
-                subject="邮箱管理系统通知功能测试",
+                subject="[测试] 通知功能验证",
                 body=body
             )
             

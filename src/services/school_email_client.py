@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-QQ邮箱收发客户端
+学校邮箱收发客户端
 支持SMTP发送邮件和IMAP接收邮件功能
 整合到现有邮箱管理系统中
 """
@@ -26,31 +26,31 @@ from src.models.email_model import Email, EmailAttachment
 logger = logging.getLogger(__name__)
 
 
-class QQEmailClient:
-    """QQ邮箱客户端类，整合发送和接收功能"""
+class SchoolEmailClient:
+    """学校邮箱客户端类，整合发送和接收功能"""
     
-    def __init__(self, qq_email=None, auth_code=None):
+    def __init__(self, school_email=None, password=None):
         """
-        初始化QQ邮箱客户端
+        初始化学校邮箱客户端
         
         Args:
-            qq_email (str): QQ邮箱地址，如果为None则使用配置文件中的值
-            auth_code (str): QQ邮箱授权码（不是QQ密码），如果为None则使用配置文件中的值
+            school_email (str): 学校邮箱地址，如果为None则使用配置文件中的值
+            password (str): 邮箱密码，如果为None则使用配置文件中的值
         """
         # 使用传入的参数或配置文件中的值
-        self.qq_email = qq_email or getattr(Config, 'EMAIL_ADDRESS', None)
-        self.auth_code = auth_code or getattr(Config, 'EMAIL_PASSWORD', None)
+        self.school_email = school_email or getattr(Config, 'EMAIL_ADDRESS', None)
+        self.password = password or getattr(Config, 'EMAIL_PASSWORD', None)
         
-        # QQ邮箱服务器配置
-        self.smtp_server = getattr(Config, 'SMTP_SERVER', 'smtp.qq.com')
+        # 学校邮箱服务器配置
+        self.smtp_server = getattr(Config, 'SMTP_SERVER', 'mail.sjtu.edu.cn')
         self.smtp_port = getattr(Config, 'SMTP_PORT', 465)
-        self.imap_server = getattr(Config, 'IMAP_SERVER', 'imap.qq.com')
+        self.imap_server = getattr(Config, 'IMAP_SERVER', 'mail.sjtu.edu.cn')
         self.imap_port = getattr(Config, 'IMAP_PORT', 993)
         
         # 连接对象
         self.imap_connection = None
         
-        logger.info(f"初始化QQ邮箱客户端: {self.qq_email}")
+        logger.info(f"初始化学校邮箱客户端: {self.school_email}")
     
     def send_email(self, to_emails: Union[str, List[str]], subject: str, content: str, 
                    content_type: str = "plain", attachments: Optional[List[str]] = None) -> bool:
@@ -69,7 +69,7 @@ class QQEmailClient:
         """
         # 创建邮件对象
         msg = MIMEMultipart()
-        msg['From'] = self.qq_email
+        msg['From'] = self.school_email
         msg['To'] = ', '.join(to_emails) if isinstance(to_emails, list) else to_emails
         msg['Subject'] = subject
         
@@ -116,7 +116,7 @@ class QQEmailClient:
             
             # 登录邮箱
             try:
-                server.login(self.qq_email, self.auth_code)
+                server.login(self.school_email, self.password)
                 logger.info("邮箱登录成功")
             except Exception as login_error:
                 logger.error(f"邮箱登录失败: {str(login_error)}")
@@ -127,9 +127,9 @@ class QQEmailClient:
                 # 使用sendmail方法，更可靠
                 text = msg.as_string()
                 if isinstance(to_emails, list):
-                    result = server.sendmail(self.qq_email, to_emails, text)
+                    result = server.sendmail(self.school_email, to_emails, text)
                 else:
-                    result = server.sendmail(self.qq_email, [to_emails], text)
+                    result = server.sendmail(self.school_email, [to_emails], text)
                 
                 # 检查sendmail的返回结果
                 if result:  # 如果有返回值，表示有失败的收件人
@@ -153,9 +153,9 @@ class QQEmailClient:
                 raise Exception(f"SMTP错误: {str(e)}")
             
         except smtplib.SMTPResponseException as e:
-            # 特殊处理QQ邮箱的连接关闭异常
+            # 特殊处理学校邮箱的连接关闭异常
             if e.smtp_code == -1 and e.smtp_error == b'\x00\x00\x00':
-                logger.info("邮件发送成功! (QQ邮箱连接关闭异常，但邮件已成功发送)")
+                logger.info("邮件发送成功! (学校邮箱连接关闭异常，但邮件已成功发送)")
                 logger.info(f"收件人: {to_emails}")
                 return True
             else:
@@ -189,7 +189,7 @@ class QQEmailClient:
             self.imap_connection = imaplib.IMAP4_SSL(self.imap_server, self.imap_port)
             
             # 登录邮箱
-            self.imap_connection.login(self.qq_email, self.auth_code)
+            self.imap_connection.login(self.school_email, self.password)
             
             logger.info(f"成功连接到IMAP服务器: {self.imap_server}")
             return True

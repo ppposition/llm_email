@@ -8,11 +8,12 @@ from pathlib import Path
 
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain.docstore.document import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains import RetrievalQA
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 from config import Config
 from src.models.email_model import Email
@@ -146,21 +147,25 @@ class RAGService:
                 input_variables=["context", "question"]
             )
             
-            # 创建检索QA链
-            self.qa_chain = RetrievalQA.from_chain_type(
-                llm=self.llm,
-                chain_type="stuff",
-                retriever=self.vector_store.as_retriever(
-                    search_type="similarity",
-                    search_kwargs={"k": 5}
-                ),
-                chain_type_kwargs={"prompt": prompt},
-                return_source_documents=True
+            # 使用新的LCEL语法创建检索QA链
+            retriever = self.vector_store.as_retriever(
+                search_type="similarity",
+                search_kwargs={"k": 5}
             )
+            
+            # 创建QA链
+            self.qa_chain = {
+                "context": retriever | self._format_docs,
+                "question": RunnablePassthrough()
+            } | prompt | self.llm | StrOutputParser()
             
             logger.info("QA链初始化完成")
         except Exception as e:
             logger.error(f"初始化QA链时出错: {str(e)}")
+    
+    def _format_docs(self, docs):
+        """格式化文档用于提示"""
+        return "\n\n".join(doc.page_content for doc in docs)
     
     def add_email_to_vector_store(self, email: Email) -> bool:
         """将邮件添加到向量数据库"""
@@ -308,22 +313,29 @@ class RAGService:
         try:
             logger.info(f"回答问题: {question}")
             
-            # 使用QA链回答问题
-            result = self.qa_chain({"query": question})
+            # 首先获取相关文档
+            retriever = self.vector_store.as_retriever(
+                search_type="similarity",
+                search_kwargs={"k": 5}
+            )
+            # 使用invoke方法获取相关文档
+            source_docs = retriever.invoke(question)
             
-            # 提取源文档信息
-            source_docs = []
-            if 'source_documents' in result:
-                for doc in result['source_documents']:
-                    source_docs.append({
-                        'content': doc.page_content,
-                        'metadata': doc.metadata
-                    })
+            # 使用QA链回答问题
+            answer = self.qa_chain.invoke(question)
+            
+            # 格式化源文档信息
+            formatted_source_docs = []
+            for doc in source_docs:
+                formatted_source_docs.append({
+                    'content': doc.page_content,
+                    'metadata': doc.metadata
+                })
             
             # 构建响应
             response = {
-                'answer': result.get('result', '无法回答问题'),
-                'source_documents': source_docs
+                'answer': answer,
+                'source_documents': formatted_source_docs
             }
             
             logger.info(f"问题回答完成")

@@ -64,3 +64,391 @@ Exception: 邮箱登录失败: Connection unexpectedly closed
 2025-11-09 22:20:00,788 - src.services.qq_email_client - INFO - 成功连接到IMAP服务器: imap.qq.com
 2025-11-09 22:20:01,084 - src.services.qq_email_client - INFO - 找到 10 封邮件
 2025-11-09 22:20:01,287 - src.services.qq_email_client - ERROR - 获取邮件 b'402' 时出错: expected string or bytes-like object, got 'Header'
+2025-11-15 17:00:23,162 - __main__ - INFO - 初始化邮箱管理系统
+2025-11-15 17:00:23,162 - __main__ - INFO - 配置验证通过
+2025-11-15 17:00:23,163 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@school.edu.cn
+2025-11-15 17:00:23,392 - src.services.rag_service - INFO - 使用Qwen embedding模型: Qwen/Qwen3-Embedding-8B
+2025-11-15 17:00:23,409 - src.services.rag_service - INFO - 使用Gemini LLM模型: gemini-2.5-pro
+2025-11-15 17:00:23,409 - src.services.rag_service - INFO - 加载现有向量数据库
+2025-11-15 17:00:23,411 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-11-15 17:00:23,444 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-11-15 17:00:23,455 - src.services.rag_service - INFO - QA链初始化完成
+2025-11-15 17:00:23,455 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: your_smtp_username
+2025-11-15 17:00:23,455 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@school.edu.cn
+2025-11-15 17:00:23,455 - __main__ - INFO - 创建目录: ./vector_db
+2025-11-15 17:00:23,455 - __main__ - INFO - 创建目录: ./logs
+2025-11-15 17:00:23,455 - __main__ - INFO - 创建目录: ./data
+2025-11-15 17:00:23,455 - __main__ - INFO - 邮箱管理系统初始化完成
+2025-11-15 17:00:23,455 - __main__ - INFO - 开始测试系统功能
+2025-11-15 17:00:23,455 - __main__ - INFO - 测试邮件接收功能
+2025-11-15 17:00:33,642 - src.services.school_email_client - ERROR - 连接IMAP服务器失败: b'LOGIN failed'
+2025-11-15 17:00:33,642 - __main__ - ERROR - 邮件接收功能测试失败
+2025-11-15 17:00:33,643 - __main__ - INFO - 测试通知功能
+2025-11-15 17:00:33,643 - src.services.notification_service - INFO - 测试通知功能
+2025-11-15 17:00:33,643 - src.services.school_email_client - INFO - 正在连接SMTP服务器...
+2025-11-15 17:00:33,643 - src.services.school_email_client - INFO - 使用SSL连接到 mail.sjtu.edu.cn:465
+2025-11-15 17:00:34,173 - src.services.school_email_client - ERROR - 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+2025-11-15 17:00:34,174 - src.services.school_email_client - ERROR - 发送邮件失败: 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+2025-11-15 17:00:34,177 - src.services.school_email_client - ERROR - 详细错误信息: Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 119, in send_email
+    server.login(self.school_email, self.password)
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 750, in login
+    raise last_exception
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Error: authentication failed: authentication failure')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 123, in send_email
+    raise Exception(f"邮箱登录失败: {str(login_error)}")
+Exception: 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+
+2025-11-15 17:00:34,184 - src.services.notification_service - ERROR - 通知功能测试失败
+2025-11-15 17:00:34,184 - __main__ - WARNING - 通知功能测试失败
+2025-11-15 17:00:34,184 - __main__ - INFO - 测试RAG功能
+2025-11-15 17:00:34,184 - __main__ - INFO - RAG统计信息: {'total_emails': 1, 'vector_db_path': './vector_db', 'last_updated': '2025-11-15T17:00:34.184283'}
+2025-11-15 17:00:34,184 - __main__ - INFO - 系统功能测试完成
+2025-11-15 17:00:34,184 - __main__ - INFO - 启动邮箱管理系统
+2025-11-15 17:00:34,184 - __main__ - INFO - 启动邮件检查循环
+2025-11-15 17:00:34,184 - __main__ - INFO - 启动Web API
+2025-11-15 17:00:34,184 - __main__ - INFO - 检查新邮件
+2025-11-15 17:00:34,192 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.11:5000
+2025-11-15 17:00:34,192 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-15 17:00:44,327 - src.services.school_email_client - ERROR - 连接IMAP服务器失败: b'LOGIN failed'
+2025-11-15 17:00:44,328 - __main__ - INFO - 没有新邮件
+2025-11-15 17:02:34,523 - __main__ - INFO - 初始化邮箱管理系统
+2025-11-15 17:02:34,524 - __main__ - INFO - 配置验证通过
+2025-11-15 17:02:34,524 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@school.edu.cn
+2025-11-15 17:02:34,727 - src.services.rag_service - INFO - 使用Qwen embedding模型: Qwen/Qwen3-Embedding-8B
+2025-11-15 17:02:34,743 - src.services.rag_service - INFO - 使用Gemini LLM模型: gemini-2.5-pro
+2025-11-15 17:02:34,743 - src.services.rag_service - INFO - 加载现有向量数据库
+2025-11-15 17:02:34,744 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-11-15 17:02:34,766 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-11-15 17:02:34,771 - src.services.rag_service - INFO - QA链初始化完成
+2025-11-15 17:02:34,771 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: your_notification_smtp_username
+2025-11-15 17:02:34,771 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@school.edu.cn
+2025-11-15 17:02:34,771 - __main__ - INFO - 创建目录: ./vector_db
+2025-11-15 17:02:34,771 - __main__ - INFO - 创建目录: ./logs
+2025-11-15 17:02:34,771 - __main__ - INFO - 创建目录: ./data
+2025-11-15 17:02:34,771 - __main__ - INFO - 邮箱管理系统初始化完成
+2025-11-15 17:02:34,771 - __main__ - INFO - 开始测试系统功能
+2025-11-15 17:02:34,771 - __main__ - INFO - 测试邮件接收功能
+2025-11-15 17:02:44,895 - src.services.school_email_client - ERROR - 连接IMAP服务器失败: b'LOGIN failed'
+2025-11-15 17:02:44,896 - __main__ - ERROR - 邮件接收功能测试失败
+2025-11-15 17:02:44,896 - __main__ - INFO - 测试通知功能
+2025-11-15 17:02:44,896 - src.services.notification_service - INFO - 测试通知功能
+2025-11-15 17:02:44,896 - src.services.school_email_client - INFO - 正在连接SMTP服务器...
+2025-11-15 17:02:44,896 - src.services.school_email_client - INFO - 使用SSL连接到 mail.sjtu.edu.cn:465
+2025-11-15 17:02:45,308 - src.services.school_email_client - ERROR - 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+2025-11-15 17:02:45,308 - src.services.school_email_client - ERROR - 发送邮件失败: 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+2025-11-15 17:02:45,309 - src.services.school_email_client - ERROR - 详细错误信息: Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 119, in send_email
+    server.login(self.school_email, self.password)
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 750, in login
+    raise last_exception
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Error: authentication failed: authentication failure')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 123, in send_email
+    raise Exception(f"邮箱登录失败: {str(login_error)}")
+Exception: 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+
+2025-11-15 17:02:45,316 - src.services.notification_service - ERROR - 通知功能测试失败
+2025-11-15 17:02:45,316 - __main__ - WARNING - 通知功能测试失败
+2025-11-15 17:02:45,316 - __main__ - INFO - 测试RAG功能
+2025-11-15 17:02:45,316 - __main__ - INFO - RAG统计信息: {'total_emails': 1, 'vector_db_path': './vector_db', 'last_updated': '2025-11-15T17:02:45.316378'}
+2025-11-15 17:02:45,316 - __main__ - INFO - 系统功能测试完成
+2025-11-15 17:02:45,316 - __main__ - INFO - 启动邮箱管理系统
+2025-11-15 17:02:45,316 - __main__ - INFO - 启动邮件检查循环
+2025-11-15 17:02:45,316 - __main__ - INFO - 启动Web API
+2025-11-15 17:02:45,317 - __main__ - INFO - 检查新邮件
+2025-11-15 17:02:45,324 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.11:5000
+2025-11-15 17:02:45,324 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-15 17:02:55,504 - src.services.school_email_client - ERROR - 连接IMAP服务器失败: b'LOGIN failed'
+2025-11-15 17:02:55,505 - __main__ - INFO - 没有新邮件
+2025-11-15 17:05:35,413 - __main__ - INFO - 初始化邮箱管理系统
+2025-11-15 17:05:35,413 - __main__ - INFO - 配置验证通过
+2025-11-15 17:05:35,414 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@school.edu.cn
+2025-11-15 17:05:35,617 - src.services.rag_service - INFO - 使用Qwen embedding模型: Qwen/Qwen3-Embedding-8B
+2025-11-15 17:05:35,633 - src.services.rag_service - INFO - 使用Gemini LLM模型: gemini-2.5-pro
+2025-11-15 17:05:35,634 - src.services.rag_service - INFO - 加载现有向量数据库
+2025-11-15 17:05:35,634 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-11-15 17:05:35,660 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-11-15 17:05:35,665 - src.services.rag_service - INFO - QA链初始化完成
+2025-11-15 17:05:35,665 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@school.edu.cn
+2025-11-15 17:05:35,665 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@school.edu.cn
+2025-11-15 17:05:35,665 - __main__ - INFO - 创建目录: ./vector_db
+2025-11-15 17:05:35,665 - __main__ - INFO - 创建目录: ./logs
+2025-11-15 17:05:35,665 - __main__ - INFO - 创建目录: ./data
+2025-11-15 17:05:35,665 - __main__ - INFO - 邮箱管理系统初始化完成
+2025-11-15 17:05:35,665 - __main__ - INFO - 开始测试系统功能
+2025-11-15 17:05:35,665 - __main__ - INFO - 测试邮件接收功能
+2025-11-15 17:05:45,814 - src.services.school_email_client - ERROR - 连接IMAP服务器失败: b'LOGIN failed'
+2025-11-15 17:05:45,815 - __main__ - ERROR - 邮件接收功能测试失败
+2025-11-15 17:05:45,815 - __main__ - INFO - 测试通知功能
+2025-11-15 17:05:45,815 - src.services.notification_service - INFO - 测试通知功能
+2025-11-15 17:05:45,815 - src.services.school_email_client - INFO - 正在连接SMTP服务器...
+2025-11-15 17:05:45,815 - src.services.school_email_client - INFO - 使用SSL连接到 mail.sjtu.edu.cn:465
+2025-11-15 17:05:48,018 - src.services.school_email_client - ERROR - 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+2025-11-15 17:05:48,018 - src.services.school_email_client - ERROR - 发送邮件失败: 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+2025-11-15 17:05:48,019 - src.services.school_email_client - ERROR - 详细错误信息: Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 119, in send_email
+    server.login(self.school_email, self.password)
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 750, in login
+    raise last_exception
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Error: authentication failed: authentication failure')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 123, in send_email
+    raise Exception(f"邮箱登录失败: {str(login_error)}")
+Exception: 邮箱登录失败: (535, b'5.7.8 Error: authentication failed: authentication failure')
+
+2025-11-15 17:05:48,026 - src.services.notification_service - ERROR - 通知功能测试失败
+2025-11-15 17:05:48,026 - __main__ - WARNING - 通知功能测试失败
+2025-11-15 17:05:48,026 - __main__ - INFO - 测试RAG功能
+2025-11-15 17:05:48,026 - __main__ - INFO - RAG统计信息: {'total_emails': 1, 'vector_db_path': './vector_db', 'last_updated': '2025-11-15T17:05:48.026676'}
+2025-11-15 17:05:48,026 - __main__ - INFO - 系统功能测试完成
+2025-11-15 17:05:48,026 - __main__ - INFO - 启动邮箱管理系统
+2025-11-15 17:05:48,027 - __main__ - INFO - 启动邮件检查循环
+2025-11-15 17:05:48,027 - __main__ - INFO - 启动Web API
+2025-11-15 17:05:48,027 - __main__ - INFO - 检查新邮件
+2025-11-15 17:05:48,034 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.11:5000
+2025-11-15 17:05:48,034 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-15 17:05:58,157 - src.services.school_email_client - ERROR - 连接IMAP服务器失败: b'LOGIN failed'
+2025-11-15 17:05:58,158 - __main__ - INFO - 没有新邮件
+2025-11-15 17:06:04,581 - __main__ - INFO - 初始化邮箱管理系统
+2025-11-15 17:06:04,582 - __main__ - INFO - 配置验证通过
+2025-11-15 17:06:04,582 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:06:04,783 - src.services.rag_service - INFO - 使用Qwen embedding模型: Qwen/Qwen3-Embedding-8B
+2025-11-15 17:06:04,799 - src.services.rag_service - INFO - 使用Gemini LLM模型: gemini-2.5-pro
+2025-11-15 17:06:04,799 - src.services.rag_service - INFO - 加载现有向量数据库
+2025-11-15 17:06:04,800 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-11-15 17:06:04,821 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-11-15 17:06:04,826 - src.services.rag_service - INFO - QA链初始化完成
+2025-11-15 17:06:04,826 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:06:04,826 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:06:04,826 - __main__ - INFO - 创建目录: ./vector_db
+2025-11-15 17:06:04,826 - __main__ - INFO - 创建目录: ./logs
+2025-11-15 17:06:04,826 - __main__ - INFO - 创建目录: ./data
+2025-11-15 17:06:04,826 - __main__ - INFO - 邮箱管理系统初始化完成
+2025-11-15 17:06:04,827 - __main__ - INFO - 开始测试系统功能
+2025-11-15 17:06:04,827 - __main__ - INFO - 测试邮件接收功能
+2025-11-15 17:06:05,008 - src.services.school_email_client - INFO - 成功连接到IMAP服务器: mail.sjtu.edu.cn
+2025-11-15 17:06:05,008 - __main__ - INFO - 邮件接收功能测试成功
+2025-11-15 17:06:05,008 - src.services.school_email_client - ERROR - 断开IMAP连接时出错: command CLOSE illegal in state AUTH, only allowed in states SELECTED
+2025-11-15 17:06:05,008 - __main__ - INFO - 测试通知功能
+2025-11-15 17:06:05,008 - src.services.notification_service - INFO - 测试通知功能
+2025-11-15 17:06:05,009 - src.services.school_email_client - INFO - 正在连接SMTP服务器...
+2025-11-15 17:06:05,009 - src.services.school_email_client - INFO - 使用SSL连接到 mail.sjtu.edu.cn:465
+2025-11-15 17:06:05,404 - src.services.school_email_client - INFO - 邮箱登录成功
+2025-11-15 17:06:06,971 - src.services.school_email_client - ERROR - 邮件数据错误: (554, b'5.7.1 Spam message rejected')
+2025-11-15 17:06:06,971 - src.services.school_email_client - ERROR - 发送邮件失败: 邮件数据错误: (554, b'5.7.1 Spam message rejected')
+2025-11-15 17:06:06,972 - src.services.school_email_client - ERROR - 详细错误信息: Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 132, in send_email
+    result = server.sendmail(self.school_email, [to_emails], text)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/llm/lib/python3.11/smtplib.py", line 908, in sendmail
+    raise SMTPDataError(code, resp)
+smtplib.SMTPDataError: (554, b'5.7.1 Spam message rejected')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/lighthouse/llm_email/src/services/school_email_client.py", line 150, in send_email
+    raise Exception(f"邮件数据错误: {str(e)}")
+Exception: 邮件数据错误: (554, b'5.7.1 Spam message rejected')
+
+2025-11-15 17:06:06,979 - src.services.notification_service - ERROR - 通知功能测试失败
+2025-11-15 17:06:06,979 - __main__ - WARNING - 通知功能测试失败
+2025-11-15 17:06:06,979 - __main__ - INFO - 测试RAG功能
+2025-11-15 17:06:06,980 - __main__ - INFO - RAG统计信息: {'total_emails': 1, 'vector_db_path': './vector_db', 'last_updated': '2025-11-15T17:06:06.980025'}
+2025-11-15 17:06:06,980 - __main__ - INFO - 系统功能测试完成
+2025-11-15 17:06:06,980 - __main__ - INFO - 启动邮箱管理系统
+2025-11-15 17:06:06,980 - __main__ - INFO - 启动邮件检查循环
+2025-11-15 17:06:06,980 - __main__ - INFO - 启动Web API
+2025-11-15 17:06:06,980 - __main__ - INFO - 检查新邮件
+2025-11-15 17:06:06,987 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.11:5000
+2025-11-15 17:06:06,987 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-15 17:06:07,083 - src.services.school_email_client - INFO - 成功连接到IMAP服务器: mail.sjtu.edu.cn
+2025-11-15 17:06:07,099 - src.services.school_email_client - INFO - 找到 1 封邮件
+2025-11-15 17:06:07,353 - src.services.school_email_client - INFO - 成功获取 1 封邮件
+2025-11-15 17:06:07,353 - __main__ - INFO - 找到 1 封新邮件
+2025-11-15 17:06:07,353 - src.services.email_processor - INFO - 开始处理邮件: 监控测试邮件 - 2025-11-15 15:47:22
+2025-11-15 17:06:34,147 - httpx - INFO - HTTP Request: POST https://ai.prism.uno/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-15 17:06:52,162 - httpx - INFO - HTTP Request: POST https://ai.prism.uno/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-15 17:06:52,163 - src.services.email_processor - INFO - 邮件处理完成: 监控测试邮件 - 2025-11-15 15:47:22
+2025-11-15 17:06:52,164 - src.services.rag_service - INFO - 批量添加 1 封邮件到向量数据库
+2025-11-15 17:06:52,164 - src.services.rag_service - ERROR - 处理邮件时出错: 监控测试邮件 - 2025-11-15 15:47:22, 错误: sequence item 0: expected str instance, dict found
+2025-11-15 17:06:52,164 - src.services.rag_service - INFO - 成功添加 0 封邮件到向量数据库
+2025-11-15 17:06:52,164 - __main__ - INFO - 邮件处理完成，共处理 1 封邮件
+2025-11-15 17:10:15,275 - __main__ - INFO - 初始化邮箱管理系统
+2025-11-15 17:10:15,275 - __main__ - INFO - 配置验证通过
+2025-11-15 17:10:15,276 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:10:15,473 - src.services.rag_service - INFO - 使用Qwen embedding模型: Qwen/Qwen3-Embedding-8B
+2025-11-15 17:10:15,489 - src.services.rag_service - INFO - 使用Gemini LLM模型: gemini-2.5-pro
+2025-11-15 17:10:15,489 - src.services.rag_service - INFO - 加载现有向量数据库
+2025-11-15 17:10:15,490 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-11-15 17:10:15,511 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-11-15 17:10:15,516 - src.services.rag_service - INFO - QA链初始化完成
+2025-11-15 17:10:15,516 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:10:15,516 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:10:15,516 - __main__ - INFO - 创建目录: ./vector_db
+2025-11-15 17:10:15,516 - __main__ - INFO - 创建目录: ./logs
+2025-11-15 17:10:15,516 - __main__ - INFO - 创建目录: ./data
+2025-11-15 17:10:15,516 - __main__ - INFO - 邮箱管理系统初始化完成
+2025-11-15 17:10:15,516 - __main__ - INFO - 开始测试系统功能
+2025-11-15 17:10:15,516 - __main__ - INFO - 测试邮件接收功能
+2025-11-15 17:10:15,659 - src.services.school_email_client - INFO - 成功连接到IMAP服务器: mail.sjtu.edu.cn
+2025-11-15 17:10:15,660 - __main__ - INFO - 邮件接收功能测试成功
+2025-11-15 17:10:15,660 - src.services.school_email_client - ERROR - 断开IMAP连接时出错: command CLOSE illegal in state AUTH, only allowed in states SELECTED
+2025-11-15 17:10:15,660 - __main__ - INFO - 测试通知功能
+2025-11-15 17:10:15,660 - src.services.notification_service - INFO - 测试通知功能
+2025-11-15 17:10:15,660 - src.services.school_email_client - INFO - 正在连接SMTP服务器...
+2025-11-15 17:10:15,660 - src.services.school_email_client - INFO - 使用SSL连接到 mail.sjtu.edu.cn:465
+2025-11-15 17:10:16,003 - src.services.school_email_client - INFO - 邮箱登录成功
+2025-11-15 17:10:16,927 - src.services.school_email_client - INFO - 邮件发送成功! 收件人: 13353060806@vip.163.com
+2025-11-15 17:10:16,933 - src.services.notification_service - INFO - 通知功能测试成功
+2025-11-15 17:10:16,933 - __main__ - INFO - 通知功能测试成功
+2025-11-15 17:10:16,933 - __main__ - INFO - 测试RAG功能
+2025-11-15 17:10:16,934 - __main__ - INFO - RAG统计信息: {'total_emails': 1, 'vector_db_path': './vector_db', 'last_updated': '2025-11-15T17:10:16.934039'}
+2025-11-15 17:10:16,934 - __main__ - INFO - 系统功能测试完成
+2025-11-15 17:10:16,934 - __main__ - INFO - 启动邮箱管理系统
+2025-11-15 17:10:16,934 - __main__ - INFO - 启动邮件检查循环
+2025-11-15 17:10:16,934 - __main__ - INFO - 启动Web API
+2025-11-15 17:10:16,934 - __main__ - INFO - 检查新邮件
+2025-11-15 17:10:16,944 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.11:5000
+2025-11-15 17:10:16,944 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-15 17:10:17,061 - src.services.school_email_client - INFO - 成功连接到IMAP服务器: mail.sjtu.edu.cn
+2025-11-15 17:10:17,076 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:10:17,077 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:10:17,077 - __main__ - INFO - 没有新邮件
+2025-11-15 17:13:45,005 - __main__ - INFO - 初始化邮箱管理系统
+2025-11-15 17:13:45,005 - __main__ - INFO - 配置验证通过
+2025-11-15 17:13:45,005 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:13:45,203 - src.services.rag_service - INFO - 使用Qwen embedding模型: Qwen/Qwen3-Embedding-8B
+2025-11-15 17:13:45,219 - src.services.rag_service - INFO - 使用Gemini LLM模型: gemini-2.5-pro
+2025-11-15 17:13:45,219 - src.services.rag_service - INFO - 加载现有向量数据库
+2025-11-15 17:13:45,220 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-11-15 17:13:45,242 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-11-15 17:13:45,247 - src.services.rag_service - INFO - QA链初始化完成
+2025-11-15 17:13:45,247 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:13:45,247 - src.services.school_email_client - INFO - 初始化学校邮箱客户端: position@sjtu.edu.cn
+2025-11-15 17:13:45,247 - __main__ - INFO - 创建目录: ./vector_db
+2025-11-15 17:13:45,247 - __main__ - INFO - 创建目录: ./logs
+2025-11-15 17:13:45,247 - __main__ - INFO - 创建目录: ./data
+2025-11-15 17:13:45,247 - __main__ - INFO - 邮箱管理系统初始化完成
+2025-11-15 17:13:45,247 - __main__ - INFO - 开始测试系统功能
+2025-11-15 17:13:45,247 - __main__ - INFO - 测试邮件接收功能
+2025-11-15 17:13:45,360 - src.services.school_email_client - INFO - 成功连接到IMAP服务器: mail.sjtu.edu.cn
+2025-11-15 17:13:45,360 - __main__ - INFO - 邮件接收功能测试成功
+2025-11-15 17:13:45,360 - src.services.school_email_client - ERROR - 断开IMAP连接时出错: command CLOSE illegal in state AUTH, only allowed in states SELECTED
+2025-11-15 17:13:45,360 - __main__ - INFO - 测试通知功能
+2025-11-15 17:13:45,360 - src.services.notification_service - INFO - 测试通知功能
+2025-11-15 17:13:45,361 - src.services.school_email_client - INFO - 正在连接SMTP服务器...
+2025-11-15 17:13:45,361 - src.services.school_email_client - INFO - 使用SSL连接到 mail.sjtu.edu.cn:465
+2025-11-15 17:13:45,775 - src.services.school_email_client - INFO - 邮箱登录成功
+2025-11-15 17:13:46,693 - src.services.school_email_client - INFO - 邮件发送成功! 收件人: 13353060806@vip.163.com
+2025-11-15 17:13:46,699 - src.services.notification_service - INFO - 通知功能测试成功
+2025-11-15 17:13:46,699 - __main__ - INFO - 通知功能测试成功
+2025-11-15 17:13:46,699 - __main__ - INFO - 测试RAG功能
+2025-11-15 17:13:46,699 - __main__ - INFO - RAG统计信息: {'total_emails': 1, 'vector_db_path': './vector_db', 'last_updated': '2025-11-15T17:13:46.699601'}
+2025-11-15 17:13:46,699 - __main__ - INFO - 系统功能测试完成
+2025-11-15 17:13:46,699 - __main__ - INFO - 启动邮箱管理系统
+2025-11-15 17:13:46,700 - __main__ - INFO - 启动邮件检查循环
+2025-11-15 17:13:46,700 - __main__ - INFO - 启动Web API
+2025-11-15 17:13:46,700 - __main__ - INFO - 检查新邮件
+2025-11-15 17:13:46,707 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.0.11:5000
+2025-11-15 17:13:46,707 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-11-15 17:13:46,811 - src.services.school_email_client - INFO - 成功连接到IMAP服务器: mail.sjtu.edu.cn
+2025-11-15 17:13:46,842 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:13:46,842 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:13:46,842 - __main__ - INFO - 没有新邮件
+2025-11-15 17:13:56,842 - __main__ - INFO - 检查新邮件
+2025-11-15 17:13:56,885 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:13:56,885 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:13:56,885 - __main__ - INFO - 没有新邮件
+2025-11-15 17:14:06,885 - __main__ - INFO - 检查新邮件
+2025-11-15 17:14:06,905 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:14:06,906 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:14:06,906 - __main__ - INFO - 没有新邮件
+2025-11-15 17:14:16,906 - __main__ - INFO - 检查新邮件
+2025-11-15 17:14:16,926 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:14:16,926 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:14:16,926 - __main__ - INFO - 没有新邮件
+2025-11-15 17:14:26,926 - __main__ - INFO - 检查新邮件
+2025-11-15 17:14:26,946 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:14:26,946 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:14:26,946 - __main__ - INFO - 没有新邮件
+2025-11-15 17:14:36,946 - __main__ - INFO - 检查新邮件
+2025-11-15 17:14:36,977 - src.services.school_email_client - INFO - 找到 1 封邮件
+2025-11-15 17:14:37,787 - src.services.school_email_client - INFO - 成功获取 1 封邮件
+2025-11-15 17:14:37,787 - __main__ - INFO - 找到 1 封新邮件
+2025-11-15 17:14:37,787 - src.services.email_processor - INFO - 开始处理邮件: Re: [测试] 通知功能验证
+2025-11-15 17:15:05,112 - httpx - INFO - HTTP Request: POST https://ai.prism.uno/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-15 17:15:18,404 - httpx - INFO - HTTP Request: POST https://ai.prism.uno/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-15 17:15:18,405 - src.services.email_processor - INFO - 邮件处理完成: Re: [测试] 通知功能验证
+2025-11-15 17:15:18,405 - src.services.rag_service - INFO - 批量添加 1 封邮件到向量数据库
+2025-11-15 17:15:18,405 - src.services.rag_service - ERROR - 处理邮件时出错: Re: [测试] 通知功能验证, 错误: sequence item 0: expected str instance, dict found
+2025-11-15 17:15:18,405 - src.services.rag_service - INFO - 成功添加 0 封邮件到向量数据库
+2025-11-15 17:15:18,405 - __main__ - INFO - 发现 1 封重要邮件
+2025-11-15 17:15:18,406 - src.services.notification_service - INFO - 批量发送 1 封重要邮件通知
+2025-11-15 17:15:18,406 - src.services.notification_service - INFO - 发送重要邮件通知: Re: [测试] 通知功能验证
+2025-11-15 17:15:18,406 - src.services.school_email_client - INFO - 正在连接SMTP服务器...
+2025-11-15 17:15:18,406 - src.services.school_email_client - INFO - 使用SSL连接到 mail.sjtu.edu.cn:465
+2025-11-15 17:15:18,819 - src.services.school_email_client - INFO - 邮箱登录成功
+2025-11-15 17:15:19,728 - src.services.school_email_client - INFO - 邮件发送成功! 收件人: 13353060806@vip.163.com
+2025-11-15 17:15:19,734 - src.services.notification_service - INFO - 重要邮件通知发送成功: Re: [测试] 通知功能验证
+2025-11-15 17:15:19,734 - __main__ - INFO - 邮件处理完成，共处理 1 封邮件
+2025-11-15 17:15:29,734 - __main__ - INFO - 检查新邮件
+2025-11-15 17:15:29,777 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:15:29,777 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:15:29,777 - __main__ - INFO - 没有新邮件
+2025-11-15 17:15:39,777 - __main__ - INFO - 检查新邮件
+2025-11-15 17:15:39,895 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:15:39,896 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:15:39,896 - __main__ - INFO - 没有新邮件
+2025-11-15 17:15:49,896 - __main__ - INFO - 检查新邮件
+2025-11-15 17:15:49,916 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:15:49,916 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:15:49,916 - __main__ - INFO - 没有新邮件
+2025-11-15 17:15:59,917 - __main__ - INFO - 检查新邮件
+2025-11-15 17:15:59,937 - src.services.school_email_client - INFO - 找到 0 封邮件
+2025-11-15 17:15:59,938 - src.services.school_email_client - INFO - 成功获取 0 封邮件
+2025-11-15 17:15:59,938 - __main__ - INFO - 没有新邮件
