@@ -7,8 +7,6 @@ imaplib2
 email-validator
 python-dotenv
 schedule
-flask
-flask-cors
 beautifulsoup4
 requests
 numpy

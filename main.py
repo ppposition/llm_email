@@ -20,7 +20,6 @@ from src.services.email_processor import EmailProcessor
 from src.services.rag_service import RAGService
 from src.services.notification_service import NotificationService
 from src.services.school_email_client import SchoolEmailClient
-from src.api.app import create_app
 
 # 设置日志
 logging.basicConfig(
@@ -88,8 +87,7 @@ class EmailManagementSystem:
         self.email_check_thread.daemon = True
         self.email_check_thread.start()
         
-        # 启动Web API
-        self._start_web_api()
+        logger.info("系统启动完成，邮件检查服务已运行")
     
     def stop(self):
         """停止邮箱管理系统"""
@@ -174,29 +172,6 @@ class EmailManagementSystem:
                 {"time": datetime.now().isoformat()}
             )
     
-    def _start_web_api(self):
-        """启动Web API"""
-        try:
-            logger.info("启动Web API")
-            
-            # 创建Flask应用
-            app = create_app(self)
-            
-            # 启动Flask应用
-            app.run(
-                host=Config.FLASK_HOST,
-                port=Config.FLASK_PORT,
-                debug=False,
-                threaded=True
-            )
-            
-        except Exception as e:
-            logger.error(f"启动Web API时出错: {str(e)}")
-            # 发送错误通知
-            self.notification_service.send_error_notification(
-                f"启动Web API时出错: {str(e)}",
-                {"time": datetime.now().isoformat()}
-            )
     
     def test_system(self):
         """测试系统功能"""

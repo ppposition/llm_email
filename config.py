@@ -36,10 +36,6 @@ class Config:
     # 向量数据库配置
     VECTOR_DB_PATH = os.getenv('VECTOR_DB_PATH', './vector_db')
     
-    # 应用配置
-    FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY', 'dev-secret-key')
-    FLASK_HOST = os.getenv('FLASK_HOST', '0.0.0.0')
-    FLASK_PORT = int(os.getenv('FLASK_PORT', 5000))
     
     # 邮件检查间隔（秒）
     EMAIL_CHECK_INTERVAL = int(os.getenv('EMAIL_CHECK_INTERVAL', 300))

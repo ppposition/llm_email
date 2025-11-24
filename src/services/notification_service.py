@@ -185,7 +185,6 @@ class NotificationService:
     def _send_email(self, to_email: str, subject: str, body: str, is_html: bool = False) -> bool:
         """发送邮件"""
         try:
-            # 使用QQ邮箱客户端发送邮件
             content_type = "html" if is_html else "plain"
             return self.school_email_client.send_email(
                 to_emails=to_email,
